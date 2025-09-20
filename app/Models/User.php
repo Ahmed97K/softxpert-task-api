@@ -3,21 +3,20 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\UserAction;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
-use App\Traits\UserAction;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
+use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\NewAccessToken;
-
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, HasRoles, UserAction;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, UserAction;
 
     /**
      * The attributes that are mass assignable.
@@ -59,20 +58,18 @@ class User extends Authenticatable
         return $this->hasMany(Task::class, 'assignee_id');
     }
 
-
     public function createdTasks()
     {
         return $this->hasMany(Task::class, 'created_by_id');
     }
 
-
     public function createToken(string $name, array $abilities = ['*'], $expiresAt = null)
     {
         $expiration = (int) config('sanctum.expiration');
-        $token      = $this->tokens()->create([
-            'name'       => $name,
-            'token'      => hash('sha256', $plainTextToken = Str::random(240)),
-            'abilities'  => $abilities,
+        $token = $this->tokens()->create([
+            'name' => $name,
+            'token' => hash('sha256', $plainTextToken = Str::random(240)),
+            'abilities' => $abilities,
             'expires_at' => Carbon::now()->addMinutes((int) $expiresAt ?? config('sanctum.expiration')),
         ]);
 

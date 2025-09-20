@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Enums\TaskStatusEnum;
 use App\Enums\TaskPriorityEnum;
+use App\Enums\TaskStatusEnum;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Builder;
 
 class Task extends Model
 {
@@ -64,12 +64,10 @@ class Task extends Model
      * If task A depends on task B,
      * then $taskB->dependents will return [TaskA].
      */
-
     public function dependents(): BelongsToMany
     {
         return $this->belongsToMany(Task::class, 'task_dependencies', 'depends_on_task_id', 'task_id');
     }
-
 
     /**
      * Scope to get tasks assigned to current authenticated user
@@ -83,12 +81,12 @@ class Task extends Model
     {
         [$from, $to] = match (true) {
             $dateRange && is_null($to) && str_contains($dateRange, ',') => array_map('trim', explode(',', $dateRange, 2)),
-            $dateRange && is_null($to)                                  => [$dateRange, $dateRange],
-            default                                                     => [$dateRange, $to],
+            $dateRange && is_null($to) => [$dateRange, $dateRange],
+            default => [$dateRange, $to],
         };
 
         $from = $from ? Carbon::parse($from)->startOfDay() : null;
-        $to   = $to ? Carbon::parse($to)->endOfDay() : null;
+        $to = $to ? Carbon::parse($to)->endOfDay() : null;
 
         return $query
             ->when($from && $to, fn ($q) => $q->whereBetween('due_date', [$from, $to]))
@@ -96,19 +94,18 @@ class Task extends Model
             ->when(! $from && $to, fn ($q) => $q->where('due_date', '<=', $to));
     }
 
-
     public function allDependenciesCompleted(): bool
     {
         return $this->dependencies()
-                    ->where('status', '!=', TaskStatusEnum::COMPLETED)
-                    ->doesntExist();
+            ->where('status', '!=', TaskStatusEnum::COMPLETED)
+            ->doesntExist();
     }
 
     public function getIncompleteDependencies()
     {
         return $this->dependencies()
-                    ->where('status', '!=', TaskStatusEnum::COMPLETED)
-                    ->get();
+            ->where('status', '!=', TaskStatusEnum::COMPLETED)
+            ->get();
     }
 
     public function canChangeStatusTo(TaskStatusEnum $newStatus): bool
@@ -127,5 +124,4 @@ class Task extends Model
     {
         return $this->assignee_id === authUser()->id;
     }
-
 }

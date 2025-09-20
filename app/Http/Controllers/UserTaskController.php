@@ -11,7 +11,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class UserTaskController extends Controller
 {
-
     public function index(Request $request)
     {
         $tasks = QueryBuilder::for(Task::class)
@@ -29,15 +28,14 @@ class UserTaskController extends Controller
         return $this->ok(data: UserTaskResource::collection($tasks)->response()->getData(true));
     }
 
-
     public function show(Task $task)
     {
         $this->authorize('view', $task);
 
         $task->load(['assignedUser', 'creator']);
+
         return $this->ok(data: UserTaskResource::make($task)->response()->getData(true));
     }
-
 
     public function updateTaskStatus(Task $task, UpdateUserTaskStatusRequest $request)
     {
@@ -45,6 +43,7 @@ class UserTaskController extends Controller
         $task->update($request->validated());
 
         $task->load(['assignedUser', 'creator']);
+
         return $this->ok(
             message: __('messages.task_status_updated'),
             data: UserTaskResource::make($task)->response()->getData(true)

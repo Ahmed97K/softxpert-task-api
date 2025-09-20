@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Models\User;
 use Illuminate\Http\Request;
 
-
 if (! function_exists('globalPerPage')) {
     function globalPerPage(?Request $request = null)
     {

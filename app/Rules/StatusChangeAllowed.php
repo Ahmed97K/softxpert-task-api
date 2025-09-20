@@ -15,12 +15,12 @@ class StatusChangeAllowed implements ValidationRule
     {
         $newStatus = $value instanceof TaskStatusEnum ? $value : TaskStatusEnum::from($value);
 
-        if (!$this->task->canChangeStatusTo($newStatus)) {
+        if (! $this->task->canChangeStatusTo($newStatus)) {
             $incompleteDependencies = $this->task->getIncompleteDependencies();
             $dependencyTitles = $incompleteDependencies->pluck('title')->implode(', ');
 
             $fail(__('validation.cannot_complete_with_dependencies', [
-                'dependencies' => $dependencyTitles
+                'dependencies' => $dependencyTitles,
             ]));
         }
     }

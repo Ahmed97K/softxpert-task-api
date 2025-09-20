@@ -22,7 +22,7 @@ class DependencyNotExists implements ValidationRule
 
         if ($dependencyTask) {
             $fail(__('validation.dependency_already_exists', [
-                'task' => $dependencyTask->title
+                'task' => $dependencyTask->title,
             ]));
         }
     }

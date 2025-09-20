@@ -18,6 +18,7 @@ trait UserAction
     public function refreshTokenWithBearer(): string
     {
         $refreshToken = $this->createToken('refresh_token', [TokenAbilityEnum::ISSUE_ACCESS_TOKEN->value], (int) config('sanctum.refresh_expiration'));
+
         return 'Bearer '.$refreshToken->plainTextToken;
     }
 

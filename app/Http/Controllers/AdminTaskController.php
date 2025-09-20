@@ -35,33 +35,33 @@ class AdminTaskController extends Controller
         return $this->ok(data: IndexTaskResource::collection($tasks)->response()->getData(true));
     }
 
-
     public function show(Task $task)
     {
         $task->load(['assignedUser', 'creator', 'dependencies']);
+
         return $this->ok(data: ShowTaskResource::make($task)->response()->getData(true));
     }
-
 
     public function store(StoreTaskRequest $request)
     {
         $task = Task::create($request->validated());
 
         $task->load(['assignedUser', 'creator']);
+
         return $this->ok(data: StoreTaskResource::make($task)->response()->getData(true));
     }
-
 
     public function update(Task $task, UpdateTaskRequest $request)
     {
         $validated = $request->validated();
         $task->update(Arr::except($validated, ['dependencies']));
 
-        if(!empty($request->dependencies)) {
+        if (! empty($request->dependencies)) {
             $task->dependencies()->sync($request->dependencies);
         }
 
         $task->load(['assignedUser', 'creator', 'dependencies']);
+
         return $this->ok(data: ShowTaskResource::make($task)->response()->getData(true), message: __('messages.task_updated'));
     }
 
@@ -70,12 +70,12 @@ class AdminTaskController extends Controller
         $task->dependencies()->attach($request->dependencies);
 
         $task->load(['assignedUser', 'creator', 'dependencies']);
+
         return $this->ok(
             message: __('messages.dependencies_added'),
             data: ShowTaskResource::make($task)->response()->getData(true)
         );
     }
-
 
     public function getTaskDependencies(Task $task)
     {
@@ -84,10 +84,9 @@ class AdminTaskController extends Controller
         return $this->ok(data: [
             'task_id' => $task->id,
             'task_title' => $task->title,
-            'dependencies' => TaskDependencyResource::collection($task->dependencies)
+            'dependencies' => TaskDependencyResource::collection($task->dependencies),
         ]);
     }
-
 
     public function removeTaskDependency(Task $task, Task $dependency)
     {
@@ -101,6 +100,7 @@ class AdminTaskController extends Controller
         $task->update($request->validated());
 
         $task->load(['assignedUser', 'creator']);
+
         return $this->ok(
             message: __('messages.task_status_updated'),
             data: ShowTaskResource::make($task)->response()->getData(true)

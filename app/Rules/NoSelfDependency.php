@@ -12,14 +12,12 @@ class NoSelfDependency implements ValidationRule
      *
      * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
      */
+    public function __construct(private int $taskId) {}
 
-     public function __construct(private int $taskId) {}
-
-     public function validate(string $attribute, mixed $value, Closure $fail): void
-     {
-         if ((int) $value === $this->taskId) {
-             $fail(__('validation.no_self_dependency'));
-         }
-     }
-
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if ((int) $value === $this->taskId) {
+            $fail(__('validation.no_self_dependency'));
+        }
+    }
 }

@@ -5,8 +5,8 @@ namespace App\Http\Requests\User;
 use App\Enums\TaskStatusEnum;
 use App\Rules\StatusChangeAllowed;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateUserTaskStatusRequest extends FormRequest
 {
@@ -21,7 +21,7 @@ class UpdateUserTaskStatusRequest extends FormRequest
             'status' => [
                 'required',
                 new Enum(TaskStatusEnum::class),
-                new StatusChangeAllowed($this->route('task'))
+                new StatusChangeAllowed($this->route('task')),
             ],
         ];
     }

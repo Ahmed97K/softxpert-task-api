@@ -22,7 +22,7 @@ class StoreTaskResource extends JsonResource
             'priority' => $this->priority,
             'assigned_user' => UserSummaryResource::make($this->whenLoaded('assignedUser')),
             'created_by' => UserSummaryResource::make($this->whenLoaded('creator')),
-            'due_date' => $this->when($this->due_date, fn() => $this->due_date->frontEndFormat()),
+            'due_date' => $this->when($this->due_date, fn () => $this->due_date->frontEndFormat()),
             'created_at' => $this->created_at->frontEndFormat(),
             'updated_at' => $this->updated_at->frontEndFormat(),
         ];

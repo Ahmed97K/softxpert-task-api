@@ -1,10 +1,8 @@
 <?php
 
 use App\Exceptions\AccessDeniedHttpExceptionRenderer;
-use App\Exceptions\AuthenticationExceptionRenderer;
 use App\Exceptions\NotFoundHttpExceptionRenderer;
 use App\Exceptions\UnauthorizedExceptionRenderer;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;

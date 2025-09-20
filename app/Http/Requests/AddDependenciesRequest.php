@@ -28,7 +28,7 @@ class AddDependenciesRequest extends FormRequest
         $task = $this->route('task');
 
         return [
-            'dependencies'   => ['required', 'array', 'min:1'],
+            'dependencies' => ['required', 'array', 'min:1'],
             'dependencies.*' => [
                 'integer', 'distinct', Rule::exists('tasks', 'id'),
                 new NoSelfDependency($task->id),
