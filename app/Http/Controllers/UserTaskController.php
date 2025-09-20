@@ -46,7 +46,7 @@ class UserTaskController extends Controller
 
         $task->load(['assignedUser', 'creator']);
         return $this->ok(
-            message: 'Task status updated successfully',
+            message: __('messages.task_status_updated'),
             data: UserTaskResource::make($task)->response()->getData(true)
         );
     }
