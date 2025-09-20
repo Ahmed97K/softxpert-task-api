@@ -127,7 +127,6 @@ Import: `softxpert-task-api.postman_collection.json`
 - ✅ All endpoints with examples
 - ✅ Automatic token management
 - ✅ Form-data requests with descriptions
-- ✅ Error scenario testing
 
 ### Manual Testing
 1. Login as manager → Test admin endpoints
@@ -184,6 +183,3 @@ Import: `softxpert-task-api.postman_collection.json`
 - **Dependencies** - Prevent circular and self-dependencies
 - **Status Control** - Dependency completion enforcement
 
----
-
-**Built with Laravel 12.x | API Version 1.0**
