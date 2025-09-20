@@ -10,19 +10,8 @@ class RolesSeeder extends Seeder
 {
     public function run(): void
     {
-        $manager = Role::firstOrCreate(['name' => UserRolesEnum::ADMIN->value]);
-        $user    = Role::firstOrCreate(['name' => UserRolesEnum::USER->value]);
-
-        $manager->syncPermissions([
-            'tasks.create',
-            'tasks.update.any',
-            'tasks.view.any',
-            'tasks.dependencies.manage',
-        ]);
-
-        $user->syncPermissions([
-            'tasks.view.own',
-            'tasks.status.update.own',
-        ]);
+        // Create roles only - no permissions needed
+        Role::firstOrCreate(['name' => UserRolesEnum::ADMIN->value]);
+        Role::firstOrCreate(['name' => UserRolesEnum::USER->value]);
     }
 }
