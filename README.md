@@ -92,21 +92,47 @@ The ERD shows the complete database structure with relationships between users, 
 - Laravel 12.x
 
 ### Quick Start
+
+#### 1️⃣ Clone & Install
 ```bash
-# Clone and setup
-git clone <repository-url>
-cd task-api
+# Clone the project from GitHub
+git clone https://github.com/Ahmed97K/softxpert-task-api.git
+cd softxpert-task-api
+
+# Install dependencies
 composer install
+```
 
-# Environment
+#### 2️⃣ Environment Setup (.env)
+```bash
+# Copy environment file
 cp .env.example .env
-php artisan key:generate
+```
 
-# Database
+Open the `.env` file and update the database configuration (`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`) according to your setup.
+
+#### 3️⃣ Generate Application Key
+```bash
+# Generate application key (APP_KEY)
+php artisan key:generate
+```
+
+#### 4️⃣ Sanctum Configuration
+Ensure Sanctum is properly configured in your `.env` file:
+```env
+SANCTUM_TOKEN_EXPIRATION=10080
+SANCTUM_REFRESH_TOKEN_EXPIRATION=525960
+```
+
+#### 5️⃣ Database Setup
+```bash
+# Run migrations
 php artisan migrate
+
+# Seed sample data
 php artisan db:seed
 
-# Start server
+# Start development server
 php artisan serve
 ```
 
@@ -115,6 +141,28 @@ php artisan serve
 Manager: manager@example.com / password (admin role)
 User 1:  user@example.com / password (user role)
 User 2:  user2@example.com / password (user role)
+```
+
+#### 6️⃣ Verify Installation
+```bash
+# Check routes
+php artisan route:list
+
+# Verify database connection
+php artisan tinker --execute="echo 'Database connected: ' . (DB::connection()->getPdo() ? 'YES' : 'NO');"
+```
+
+#### 7️⃣ Test API
+```bash
+# Test admin login
+curl -X POST http://localhost:8000/admin/login \
+  -H "Accept: application/json" \
+  -d "email=manager@example.com&password=password"
+
+# Test user login
+curl -X POST http://localhost:8000/api/v1/login \
+  -H "Accept: application/json" \
+  -d "email=user@example.com&password=password"
 ```
 
 ## 🧪 Testing
@@ -182,4 +230,3 @@ Import: `softxpert-task-api.postman_collection.json`
 - **Ownership** - Users access only assigned tasks
 - **Dependencies** - Prevent circular and self-dependencies
 - **Status Control** - Dependency completion enforcement
-
