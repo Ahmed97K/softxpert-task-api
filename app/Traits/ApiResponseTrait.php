@@ -30,6 +30,11 @@ trait ApiResponseTrait
         return $this->formatResponse($message, $data, ResponseEnum::HTTP_NOT_FOUND);
     }
 
+    protected function unauthorized(mixed $message = null, mixed $data = null): JsonResponse
+    {
+        return $this->formatResponse($message, $data, ResponseEnum::HTTP_UNAUTHORIZED);
+    }
+
     protected function formatResponse(mixed $message, mixed $data, ResponseEnum $code): JsonResponse
     {
         $formattedMessage = is_object($message) ? $message : ['txt' => is_array($message) ? $message : [$message]];

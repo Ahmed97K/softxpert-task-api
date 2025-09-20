@@ -1,12 +1,16 @@
 <?php
 
+use App\Exceptions\AccessDeniedHttpExceptionRenderer;
+use App\Exceptions\AuthenticationExceptionRenderer;
 use App\Exceptions\NotFoundHttpExceptionRenderer;
 use App\Exceptions\UnauthorizedExceptionRenderer;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Exceptions\UnauthorizedException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -36,13 +40,17 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         if (request()->is('api/*') || request()->is('admin/*')) {
 
-        $exceptions->renderable(function (UnauthorizedException $e) {
-            return (new UnauthorizedExceptionRenderer)->handle($e);
-        });
+            $exceptions->renderable(function (UnauthorizedException $e) {
+                return (new UnauthorizedExceptionRenderer)->handle($e);
+            });
 
-        $exceptions->renderable(function (NotFoundHttpException $e) {
-            return (new NotFoundHttpExceptionRenderer)->handle($e);
-        });
+            $exceptions->renderable(function (NotFoundHttpException $e) {
+                return (new NotFoundHttpExceptionRenderer)->handle($e);
+            });
+
+            $exceptions->renderable(function (AccessDeniedHttpException $e) {
+                return (new AccessDeniedHttpExceptionRenderer)->handle($e->getMessage());
+            });
 
         }
     })->create();
