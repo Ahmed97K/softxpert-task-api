@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            // title / description / status / priority / due_date / user_id / created_by / created_at / updated_at
+            // title / description / status / priority / due_date / assignee_id / created_by_id / created_at / updated_at
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('status');
             $table->string('priority');
             $table->date('due_date')->nullable();
-            $table->foreignId('user_id')->constrained('users')->onDelete('set null');
-            $table->foreignId('created_by')->constrained('users')->onDelete('set null');
+            $table->foreignId('assignee_id')->constrained('users')->onDelete('set null');
+            $table->foreignId('created_by_id')->constrained('users')->onDelete('set null');
             $table->timestamps();
 
-            $table->index('user_id');
-            $table->index('created_by');
+            $table->index('assignee_id');
+            $table->index('created_by_id');
         });
     }
 
