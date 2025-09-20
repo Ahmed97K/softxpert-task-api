@@ -1,9 +1,13 @@
 <?php
 
+use App\Exceptions\NotFoundHttpExceptionRenderer;
+use App\Exceptions\UnauthorizedExceptionRenderer;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Exceptions\UnauthorizedException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -30,5 +34,15 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        if (request()->is('api/*') || request()->is('admin/*')) {
+
+        $exceptions->renderable(function (UnauthorizedException $e) {
+            return (new UnauthorizedExceptionRenderer)->handle($e);
+        });
+
+        $exceptions->renderable(function (NotFoundHttpException $e) {
+            return (new NotFoundHttpExceptionRenderer)->handle($e);
+        });
+
+        }
     })->create();
