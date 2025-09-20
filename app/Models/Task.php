@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\TaskStatus;
 use App\Enums\TaskPriority;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -60,4 +61,23 @@ class Task extends Model
     {
         return $this->belongsToMany(Task::class, 'task_dependencies', 'depends_on_task_id', 'task_id');
     }
+
+
+    public function scopeDateRange(Builder $query, ?string $dateRange, ?string $to = null): Builder
+    {
+        [$from, $to] = match (true) {
+            $dateRange && is_null($to) && str_contains($dateRange, ',') => array_map('trim', explode(',', $dateRange, 2)),
+            $dateRange && is_null($to)                                  => [$dateRange, $dateRange],
+            default                                                     => [$dateRange, $to],
+        };
+
+        $from = $from ? Carbon::parse($from)->startOfDay() : null;
+        $to   = $to ? Carbon::parse($to)->endOfDay() : null;
+
+        return $query
+            ->when($from && $to, fn ($q) => $q->whereBetween('due_date', [$from, $to]))
+            ->when($from && ! $to, fn ($q) => $q->where('due_date', '>=', $from))
+            ->when(! $from && $to, fn ($q) => $q->where('due_date', '<=', $to));
+    }
+
 }
