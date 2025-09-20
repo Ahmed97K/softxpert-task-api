@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\UpdateUserTaskStatusRequest;
-use App\Http\Resources\User\UserTaskCollection;
-use App\Http\Resources\User\UserTaskResource;
+use App\Http\Resources\UserTaskResource;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;

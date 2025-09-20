@@ -71,6 +71,14 @@ class Task extends Model
     }
 
 
+    /**
+     * Scope to get tasks assigned to current authenticated user
+     */
+    public function scopeAssignedToCurrentUser(Builder $query): Builder
+    {
+        return $query->where('assignee_id', authUser()->id);
+    }
+
     public function scopeDateRange(Builder $query, ?string $dateRange, ?string $to = null): Builder
     {
         [$from, $to] = match (true) {
@@ -110,6 +118,14 @@ class Task extends Model
         }
 
         return $this->allDependenciesCompleted();
+    }
+
+    /**
+     * Check if task is assigned to current authenticated user
+     */
+    public function isAssignedToCurrentUser(): bool
+    {
+        return $this->assignee_id === authUser()->id;
     }
 
 }
