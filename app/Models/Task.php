@@ -35,4 +35,29 @@ class Task extends Model
     {
         return $this->belongsTo(User::class, 'created_by_id');
     }
+
+    /**
+     * Get the tasks that this task depends on (its prerequisites).
+     *
+     * Example:
+     * If task A requires tasks B and C to be completed first,
+     * then $taskA->dependencies will return [TaskB, TaskC].
+     */
+    public function dependencies(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'task_dependencies', 'task_id', 'depends_on_task_id');
+    }
+
+    /**
+     * Get the tasks that depend on this task (its dependents).
+     *
+     * Example:
+     * If task A depends on task B,
+     * then $taskB->dependents will return [TaskA].
+     */
+
+    public function dependents(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'task_dependencies', 'depends_on_task_id', 'task_id');
+    }
 }
