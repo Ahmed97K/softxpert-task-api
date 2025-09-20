@@ -2,30 +2,38 @@
 
 namespace App\Models;
 
-use App\Enums\TaskStatus;
-use App\Enums\TaskPriority;
+use App\Enums\TaskStatusEnum;
+use App\Enums\TaskPriorityEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 
 class Task extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $guarded = [];
 
     protected $casts = [
-        'status' => TaskStatus::class,
-        'priority' => TaskPriority::class,
+        'status' => TaskStatusEnum::class,
+        'priority' => TaskPriorityEnum::class,
         'due_date' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($task) {
+            $task->created_by_id = authUser()->id;
+            $task->status = TaskStatusEnum::PENDING;
+            $task->priority = TaskPriorityEnum::LOW;
+        });
+    }
 
     public function assignedUser(): BelongsTo
     {
@@ -78,6 +86,30 @@ class Task extends Model
             ->when($from && $to, fn ($q) => $q->whereBetween('due_date', [$from, $to]))
             ->when($from && ! $to, fn ($q) => $q->where('due_date', '>=', $from))
             ->when(! $from && $to, fn ($q) => $q->where('due_date', '<=', $to));
+    }
+
+
+    public function allDependenciesCompleted(): bool
+    {
+        return $this->dependencies()
+                    ->where('status', '!=', TaskStatusEnum::COMPLETED)
+                    ->doesntExist();
+    }
+
+    public function getIncompleteDependencies()
+    {
+        return $this->dependencies()
+                    ->where('status', '!=', TaskStatusEnum::COMPLETED)
+                    ->get();
+    }
+
+    public function canChangeStatusTo(TaskStatusEnum $newStatus): bool
+    {
+        if ($newStatus !== TaskStatusEnum::COMPLETED) {
+            return true;
+        }
+
+        return $this->allDependenciesCompleted();
     }
 
 }
