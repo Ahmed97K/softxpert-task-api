@@ -1,61 +1,189 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SoftXpert Task Management API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive RESTful API for task management with role-based access control, dependency management, and comprehensive validation.
 
-## About Laravel
+> **Developed for SoftXpert** - Enterprise-grade task management solution
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Core Functionality
+- ✅ **Task Management** - Create, read, update tasks with full CRUD operations
+- ✅ **Task Dependencies** - Manage task dependencies with circular dependency prevention
+- ✅ **Status Workflow** - Task status management with dependency validation
+- ✅ **Role-based Access** - Admin and User roles with different permissions
+- ✅ **Authentication** - Stateless JWT authentication using Laravel Sanctum
+- ✅ **Filtering & Sorting** - Advanced filtering by status, date range, assignee, priority
+- ✅ **Validation** - Comprehensive validation with custom rules
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Business Rules
+- 📋 **Task Creation** - Managers can create and assign tasks to users
+- 👥 **Task Assignment** - Managers can assign/reassign tasks to any user
+- 🔒 **User Access** - Users can only view and update status of assigned tasks
+- 🔗 **Dependencies** - Tasks cannot be completed until all dependencies are done
+- ⚡ **Status Control** - Flexible updates for task details, strict rules for status changes
 
-## Learning Laravel
+## 📚 API Documentation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Base URLs
+- **Admin APIs**: `https://task-api.test/admin` (Managers only)
+- **User APIs**: `https://task-api.test/api/v1` (Users only)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Authentication
+```http
+POST /admin/login
+POST /api/v1/login
+Content-Type: application/x-www-form-urlencoded
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+email=manager@example.com&password=password
+```
 
-## Laravel Sponsors
+### Admin Endpoints (Managers)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### Task Management
+```http
+GET    /admin/tasks                              # List all tasks with filters
+POST   /admin/tasks                              # Create new task
+GET    /admin/tasks/{task}                       # Get task details
+PUT    /admin/tasks/{task}                       # Update task details
+```
 
-### Premium Partners
+#### Status Management
+```http
+PUT    /admin/tasks/{task}/status                # Update task status
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+#### Dependency Management
+```http
+GET    /admin/tasks/{task}/dependencies          # Get task dependencies
+POST   /admin/tasks/{task}/dependencies          # Add dependencies
+DELETE /admin/tasks/{task}/dependencies/{dep}    # Remove dependency
+```
 
-## Contributing
+### User Endpoints (Assigned Users)
+```http
+GET    /api/v1/tasks                             # List assigned tasks only
+GET    /api/v1/tasks/{task}                      # Get assigned task details
+PUT    /api/v1/tasks/{task}/status               # Update assigned task status
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Filtering & Sorting
+```http
+GET /admin/tasks?filter[status]=pending&filter[assignee_id]=1&sort=due_date&per_page=10
+```
 
-## Code of Conduct
+**Available Filters:**
+- `status` - pending, in_progress, completed, cancelled, on_hold
+- `assignee_id` - Filter by assigned user ID
+- `date_range` - Due date range (YYYY-MM-DD,YYYY-MM-DD)
+- `priority` - low, medium, high
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🗃️ Database Schema
 
-## Security Vulnerabilities
+![Database ERD](ERD.png)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The ERD shows the complete database structure with relationships between users, tasks, dependencies, and authentication/authorization tables.
 
-## License
+## 🔧 Installation & Setup
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Prerequisites
+- PHP 8.2+
+- MySQL 8.0+
+- Composer
+- Laravel 12.x
+
+### Quick Start
+```bash
+# Clone and setup
+git clone <repository-url>
+cd task-api
+composer install
+
+# Environment
+cp .env.example .env
+php artisan key:generate
+
+# Database
+php artisan migrate
+php artisan db:seed
+
+# Start server
+php artisan serve
+```
+
+### Default Users
+```
+Manager: manager@example.com / password (admin role)
+User 1:  user@example.com / password (user role)
+User 2:  user2@example.com / password (user role)
+```
+
+## 🧪 Testing
+
+### Postman Collection
+Import: `Task-API-Admin-Routes.postman_collection.json`
+
+**Features:**
+- ✅ Admin & User authentication
+- ✅ All endpoints with examples
+- ✅ Automatic token management
+- ✅ Form-data requests with descriptions
+- ✅ Error scenario testing
+
+### Manual Testing
+1. Login as manager → Test admin endpoints
+2. Login as user → Test user endpoints
+3. Test dependency validation
+4. Test role-based access control
+
+## 🏛️ Architecture
+
+### Security Layers
+1. **Route Middleware** - Role-based access (`role:admin`, `role:user`)
+2. **Request Authorization** - Form request validation
+3. **Controller Authorization** - Policy-based checks
+4. **Database Scopes** - Data filtering by ownership
+
+### Code Organization
+- **Controllers** - Separate admin and user controllers
+- **Requests** - Validation and authorization per endpoint
+- **Resources** - Response transformation
+- **Policies** - Authorization logic
+- **Rules** - Custom validation rules
+- **Traits** - Reusable functionality
+
+## 📋 Business Requirements Compliance
+
+### ✅ Main Endpoints
+- ✅ Authentication for system actors
+- ✅ Create new task
+- ✅ Retrieve tasks with filtering (status, due date, assigned user)
+- ✅ Add task dependencies with completion validation
+- ✅ Retrieve task details including dependencies
+- ✅ Update task details (title, description, assignee, due date)
+- ✅ Update task status with dependency validation
+
+### ✅ Role-based Authorization
+- ✅ Managers can create/update tasks
+- ✅ Managers can assign tasks to users
+- ✅ Users can retrieve only assigned tasks
+- ✅ Users can update only status of assigned tasks
+
+### ✅ Technical Requirements
+- ✅ RESTful API design
+- ✅ Data validation
+- ✅ Stateless authentication
+- ✅ Error handling
+- ✅ Database migrations/seeders
+
+## 🛡️ Security Features
+
+- **Authentication** - Laravel Sanctum tokens
+- **Authorization** - Role-based with policies
+- **Validation** - Multi-layer validation
+- **Ownership** - Users access only assigned tasks
+- **Dependencies** - Prevent circular and self-dependencies
+- **Status Control** - Dependency completion enforcement
+
+---
+
+**Built with Laravel 12.x | API Version 1.0**
