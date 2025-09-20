@@ -2,7 +2,7 @@
 
 A comprehensive RESTful API for task management with role-based access control, dependency management, and comprehensive validation.
 
-> **Developed for SoftXpert** - Enterprise-grade task management solution
+> **Developed for SoftXpert** - Task management solution
 
 ## 🚀 Features
 
