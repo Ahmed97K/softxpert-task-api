@@ -54,6 +54,17 @@ class User extends Authenticatable
         ];
     }
 
+    public function assignedTasks()
+    {
+        return $this->hasMany(Task::class, 'assignee_id');
+    }
+
+
+    public function createdTasks()
+    {
+        return $this->hasMany(Task::class, 'created_by_id');
+    }
+
 
     public function createToken(string $name, array $abilities = ['*'], $expiresAt = null)
     {
