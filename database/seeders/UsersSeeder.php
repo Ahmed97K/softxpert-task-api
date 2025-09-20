@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Enums\UserRoles;
+use App\Enums\UserRolesEnum;
 
 class UsersSeeder extends Seeder
 {
@@ -15,21 +15,21 @@ class UsersSeeder extends Seeder
             'email' => 'manager@example.com',
             'password' => 'password',
         ]);
-        $manager->assignRole(UserRoles::ADMIN->value);
+        $manager->assignRole(UserRolesEnum::ADMIN->value);
 
         $user = User::factory()->create([
             'name' => 'User',
             'email' => 'user@example.com',
             'password' => 'password',
         ]);
-        $user->assignRole(UserRoles::USER->value);
+        $user->assignRole(UserRolesEnum::USER->value);
 
         $user2 = User::factory()->create([
             'name' => 'User 2',
             'email' => 'user2@example.com',
             'password' => 'password',
         ]);
-        $user2->assignRole(UserRoles::USER->value);
+        $user2->assignRole(UserRolesEnum::USER->value);
 
     }
 }

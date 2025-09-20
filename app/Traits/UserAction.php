@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Enums\TokenAbility;
+use App\Enums\TokenAbilityEnum;
 
 trait UserAction
 {
@@ -10,14 +10,14 @@ trait UserAction
     public function tokenWithBearer(): string
     {
         /** @var User $this */
-        $accessToken = $this->createToken('access_token', [TokenAbility::ACCESS_API->value], (int) config('sanctum.expiration'));
-        
+        $accessToken = $this->createToken('access_token', [TokenAbilityEnum::ACCESS_API->value], (int) config('sanctum.expiration'));
+
         return 'Bearer '.$accessToken->plainTextToken;
     }
 
     public function refreshTokenWithBearer(): string
     {
-        $refreshToken = $this->createToken('refresh_token', [TokenAbility::ISSUE_ACCESS_TOKEN->value], (int) config('sanctum.refresh_expiration'));
+        $refreshToken = $this->createToken('refresh_token', [TokenAbilityEnum::ISSUE_ACCESS_TOKEN->value], (int) config('sanctum.refresh_expiration'));
         return 'Bearer '.$refreshToken->plainTextToken;
     }
 
